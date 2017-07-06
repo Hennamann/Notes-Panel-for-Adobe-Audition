@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+        
+<link id="ccstyleTheme" href="css/styles-darker.css" rel="stylesheet" type="text/css" />
+<link href="css/styles-custom.css" rel="stylesheet" type="text/css" />
+
+<script src="js/libs/jquery-2.0.2.min.js"></script>
+<script src="js/libs/CSInterface.js"></script>
+<script src="js/XMPBridge.js"></script>
+<script src="js/main.js"></script>
+<script src="js/aucolors.js"></script>
+<script src="js/themecolors.js"></script>
+
+<title>Notes</title>
+</head>
+
+<body class="hostElt">
+
+     <div id="content">   
+         <form id="notes-form">
+            <textarea id="notes" data-property="logComment" data-namespace-ref="NS_DM" data-namespace="http://ns.adobe.com/xmp/1.0/DynamicMedia/"></textarea>
+            <center><button type="button" class="btn-small" id="save-as">Save As</button></center>
+         </form>
+    </div>
+    <script>
+        
+    var csInterface = new CSInterface();
+
+    //Set up the event listener on the ExtendScript side:
+    csInterface.evalScript("addDocumentListeners()");
+
+    // Save the notes when Audition saves the document, (This is a bit of a hack, using extendscript events, as the CEP documentAfterSave event does not seem to be working despite audition being on the list of supported apps.)
+    csInterface.addEventListener("AUDocumentSaved", function(event) {
+         $('#notes-form').submit()
+    });
+
+    csInterface.addEventListener("AUUDocumentTypeCheck", function(event) {
+        $('#notes').prop('disabled', true);
+        $('#save-as').prop('disabled', true);
+    })
+
+    csInterface.addEventListener("AUSDocumentTypeCheck", function(event) {
+        $('#notes').prop('disabled', false);
+        $('#save-as').prop('disabled', false);
+    })
+
+    // Reload the notes panel when changing active document
+    csInterface.addEventListener("com.adobe.csxs.events.DocumentAfterActivate", function(event) {
+	    location.reload();
+    });
+
+    // Save the file using a savedialog
+    $("#save-as").click(function() {           
+        var result = window.cep.fs.showSaveDialogEx("Save As", "", ["txt"], "notes.txt", "", "Save", "File name");
+        var targetFilePath = result.data;
+        var writeResult = window.cep.fs.writeFile(targetFilePath, $("#notes").val());
+    });
+    </script>
+</body>
+</html>

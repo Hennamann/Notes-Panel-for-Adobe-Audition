@@ -1,0 +1,25 @@
+textarea {
+    background-color: rgb(35, 35, 35);
+    
+    border: none;
+    overflow: auto;
+    outline: none;
+
+    resize: none;
+
+    box-shadow: none;
+
+    width: 99%;
+    height: 96%; 
+    box-sizing: border-box;
+}
+
+#content {
+    position: absolute;
+    width: 99%;
+    height: 96%
+}
+
+form {
+    display: inline;
+}
