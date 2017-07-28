@@ -24,7 +24,7 @@
  * 	<textarea data-property="description" data-namespace-ref="NS_DC"></textarea>
  * 	<input type="text" data-property="author" data-namespace="http://purl.org/dc/elements/1.1/" />
  * 
- *  Sidenote from Henry Stabell: For a list of XMP namespaces and their namespace urls, check here: https://github.com/drewnoakes/adobe-xmp-core/blob/master/com/adobe/internal/xmp/XMPConst.java
+ *  Note to self: For a list of XMP namespaces and their namespace urls, check here: https://github.com/drewnoakes/adobe-xmp-core/blob/master/com/adobe/internal/xmp/XMPConst.java
  * 
  */
 $(document).ready(function() {

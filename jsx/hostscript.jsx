@@ -1,39 +1,39 @@
 /*
-* This file was taken from the XMPPanel sample on the CEP samples github, the following code appearing before the Adobe Warrant, is my own code, setting up a few events
-* required for the extension to function!
-*/
+ * Written by Ole Henrik Stabell - ole@henrikstabell.com
+ */
 
+// Make sure the PlugPlugExternalObject plugin is available, if not load it.
 if (ExternalObject.PlugPlugExternalObject == undefined) {
 	ExternalObject.PlugPlugExternalObject = new ExternalObject("lib:PlugPlugExternalObject");
+}
+
+// Add document listeners to dispatch CEP events, when specific Audition events are triggered..
+function addDocumentListeners() {
+	app.activeDocument.addEventListener(DocumentEvent.EVENT_SAVED, documentSaved);
+	app.addEventListener(DocumentEvent.EVENT_CLOSED, documentType);
+	app.addEventListener(DocumentEvent.EVENT_NEW, documentType);
+}
+
+// Cusotom event for document saving, as the CEP event does not work.
+function documentSaved(event) {
+	var csxsEvent = new CSXSEvent();
+	csxsEvent.type = "DocumentSaved";
+	csxsEvent.data = "Audition Document Saved!";
+	csxsEvent.dispatch();
+}
+
+// Check the current document type to ensure it supports metadata. This code should fire, but it doesen't... Could be the ES events being incorrect causing these events to never be dispatched...
+function documentType(event) {
+	var csxsEvent = new CSXSEvent();
+	if (app.activeDocument == null || app.activeDocument.toString() == "[object Document]") {
+		csxsEvent.type = "DocumentNotSupported";
+		csxsEvent.data = "Document not Supported!"
+	} else {
+		csxsEvent.type = "DocumentSupported";
+		csxsEvent.data = "Document Supported!";
 	}
-
-	//Event listener:
-	function addDocumentListeners() {
-		app.activeDocument.addEventListener(DocumentEvent.EVENT_SAVED, documentSaved);
-		app.addEventListener(DocumentEvent.EVENT_CLOSED, documentType);
-		app.addEventListener(DocumentEvent.EVENT_NEW, documentType);
-	};
-
-	//Event handler:
-	function documentSaved(event) {
-		//Construct a CSXS event and send it with data.
-		var csxsEvent = new CSXSEvent();
-		csxsEvent.type = "AUDocumentSaved";
-		csxsEvent.data = "Audition Document Saved!";
-		csxsEvent.dispatch();
-	};
-
-	function documentType(event) {
-		var csxsEvent = new CSXSEvent();
-		if (app.activeDocument== null || app.activeDocument.toString() == "[object Document]") {
-			csxsEvent.type = "AUUDocumentTypeCheck";
-			csxsEvent.data = "Document not Supported!"
-		} else if (app.activeDocument.toString() == "[object MultitrackDocument]" || app.activeDocument.toString() == "[object WaveDocument]") {
-			csxsEvent.type = "AUSDocumentTypeCheck";
-			csxsEvent.data = "Document Supported!";
-		}
-		csxsEvent.dispatch();
-	}
+	csxsEvent.dispatch();
+}
 
 /*  
  * ADOBE SYSTEMS INCORPORATED
@@ -60,8 +60,8 @@ if (ExternalObject.PlugPlugExternalObject == undefined) {
  * 
  */
 
-if(typeof($)=='undefined')
-	$={};
+if (typeof ($) == 'undefined')
+	$ = {};
 
 /***************************************************************************************
  * -- DELEGATES ------------------------------------------------------------------------
@@ -84,18 +84,18 @@ if(typeof($)=='undefined')
  * e.g.: new CSInterface().getApplicationID()
  * 
  **************************************************************************************/
-$.delegates = (function(exports) {
-	
+$.delegates = (function (exports) {
+
 	function findOrCreateDocument() {
-		if(!app.documents.length) {
+		if (!app.documents.length) {
 			app.documents.add();
 		}
-		
+
 		return app.activeDocument;
 	}
-	
-// -- metadata access strategies -------------------------------------------------------
-	
+
+	// -- metadata access strategies -------------------------------------------------------
+
 	/**
 	 * The XMPScript library provides full access to the data model and support for
 	 * parsing and serializing XMP packets. 
@@ -129,61 +129,61 @@ $.delegates = (function(exports) {
 		}
 
 		// private ---
-		
+
 		function getPropertyAsString(xmp, namespaceUri, propertyName) {
-	    	var property = xmp.getProperty(namespaceUri, propertyName);
-	    	if(property.options & XMPConst.PROP_IS_ARRAY) {
-	    		return xmp.getLocalizedText(namespaceUri, propertyName, "", "en");
-	    	} else {
-	    		return property.value;
-	    	}
+			var property = xmp.getProperty(namespaceUri, propertyName);
+			if (property.options & XMPConst.PROP_IS_ARRAY) {
+				return xmp.getLocalizedText(namespaceUri, propertyName, "", "en");
+			} else {
+				return property.value;
+			}
 		}
 
 		function setPropertyAsString(xmp, namespaceUri, propertyName, value) {
-	    	var property = xmp.getProperty(namespaceUri, propertyName, XMPConst.STRING);
-	    	
-	    	if(property && property.options & XMPConst.PROP_IS_ARRAY) {
-	    		xmp.setLocalizedText(namespaceUri, propertyName, "", "en", value);
-	    	} else {
-	    		xmp.setProperty(namespaceUri, propertyName, value);
-	    	}
+			var property = xmp.getProperty(namespaceUri, propertyName, XMPConst.STRING);
+
+			if (property && property.options & XMPConst.PROP_IS_ARRAY) {
+				xmp.setLocalizedText(namespaceUri, propertyName, "", "en", value);
+			} else {
+				xmp.setProperty(namespaceUri, propertyName, value);
+			}
 		}
-		
+
 		// public ---
-		
-		this.open = function() {
+
+		this.open = function () {
 			var target = accessor.getTarget ? accessor.getTarget() : findOrCreateDocument();
-			
+
 			// if no target could be retrieved, we don't expose the API.
-			if(!target) return;
-			
+			if (!target) return;
+
 			var xmp = new XMPMeta(accessor.getXmpPacket(target));
-			
+
 			return {
-				getTargetName: function() {
+				getTargetName: function () {
 					return accessor.getTargetName ? accessor.getTargetName(target) : target.name;
 				},
-				
-				read: function(namespaceUri, propertyName) {
-					if(xmp.doesPropertyExist(namespaceUri, propertyName)) {
+
+				read: function (namespaceUri, propertyName) {
+					if (xmp.doesPropertyExist(namespaceUri, propertyName)) {
 						return getPropertyAsString(xmp, namespaceUri, propertyName);
 					} else {
 						return "";
-			        }
+					}
 				},
-				
-				write: function(namespaceUri, propertyName, value) {
+
+				write: function (namespaceUri, propertyName, value) {
 					setPropertyAsString(xmp, namespaceUri, propertyName, value);
 				},
-				
-				commit: function() {
+
+				commit: function () {
 					var packet = xmp.serialize(XMPConst.SERIALIZE_USE_COMPACT_FORMAT);
 					accessor.setXmpPacket(target, packet);
-    			}
+				}
 			};
 		};
 	}
-	
+
 	/**
 	 * As opposed to other applications the InDesign object model does not expose the
 	 * raw XMP data. Still we can leverage the capabilities of XMPScript by wrapping the
@@ -198,140 +198,140 @@ $.delegates = (function(exports) {
 	 */
 	function InDesignAdapter() {
 		var PACKET = undefined;
-		
+
 		// private ---
-		
+
 		function createTempFile() {
 			// determine platform-dependent temp dir from environment.
-			var tempDir = $.getenv('TMPDIR') ||  $.getenv('TEMP'); 
-			
+			var tempDir = $.getenv('TMPDIR') || $.getenv('TEMP');
+
 			var file = new File(tempDir + "/" + Date.now() + ".xmp");
 			return file;
 		}
 
 		function withTempFile(callback) {
 			var tempFile = createTempFile();
-			tempFile.encoding = "UTF8"; 
+			tempFile.encoding = "UTF8";
 			var result = callback(tempFile);
 			tempFile.remove();
 			return result;
 		}
-		
+
 		function readFrom(file) {
 			file.open('r');
 			var content = file.read();
 			file.close();
-			
+
 			return content;
 		}
-		
+
 		function writeTo(file, content) {
 			file.open('w', 'TEXT');
 			var isOk = file.write(content);
 			file.close();
-			
+
 			return isOk;
 		}
-		
+
 		var wrapped = new XMPScriptAdapter({
-			getTarget: function() {
+			getTarget: function () {
 				var doc = findOrCreateDocument();
 				return doc.metadataPreferences;
 			},
-			
-			getTargetName: function(target) {
+
+			getTargetName: function (target) {
 				return target.documentTitle;
 			},
-			
-			getXmpPacket : function(metadata) {
-				if(!PACKET) {
-					withTempFile(function(file) {
+
+			getXmpPacket: function (metadata) {
+				if (!PACKET) {
+					withTempFile(function (file) {
 						metadata.save(file);
 						PACKET = readFrom(file);
 					});
 				}
-				
+
 				return PACKET;
-		    },
-		
-		    setXmpPacket : function(metadata, xmpPacket) {
-				withTempFile(function(file) {
+			},
+
+			setXmpPacket: function (metadata, xmpPacket) {
+				withTempFile(function (file) {
 					writeTo(file, xmpPacket);
 					metadata.replace(file);
 					PACKET = undefined;
 				});
-		    }
+			}
 		});
-		
+
 		// public ---
-		
+
 		this.open = wrapped.open;
-		
+
 	}
-	
-// -- public delegate API exports -------------------------------------------------------
-		
+
+	// -- public delegate API exports -------------------------------------------------------
+
 	exports["PHXS"] = new XMPScriptAdapter({
-		getXmpPacket : function(doc) {
-	    	return doc.xmpMetadata.rawData;
-	    },
-	
-	    setXmpPacket : function(doc, xmpPacket) {
-	    	doc.xmpMetadata.rawData = xmpPacket;
-	    }
+		getXmpPacket: function (doc) {
+			return doc.xmpMetadata.rawData;
+		},
+
+		setXmpPacket: function (doc, xmpPacket) {
+			doc.xmpMetadata.rawData = xmpPacket;
+		}
 	});
-		
+
 	exports["ILST"] = new XMPScriptAdapter({
-		getXmpPacket : function(doc) {
+		getXmpPacket: function (doc) {
 			return doc.XMPString;
-	    },
-	
-	    setXmpPacket : function(doc, xmpPacket) {
-	    	doc.XMPString = xmpPacket;
-	    }
+		},
+
+		setXmpPacket: function (doc, xmpPacket) {
+			doc.XMPString = xmpPacket;
+		}
 	});
-	
+
 	exports["IDSN"] = new InDesignAdapter();
 
 	exports["PPRO"] = new XMPScriptAdapter({
-		getTarget: function() {
+		getTarget: function () {
 			// assuming that the first project item is footage.
-			return app.project.rootItem.children[0]; 
+			return app.project.rootItem.children[0];
 		},
 
-		getXmpPacket : function(item) {
-			return item.getXMPMetadata(); 	    
+		getXmpPacket: function (item) {
+			return item.getXMPMetadata();
 		},
-	
-	    setXmpPacket : function(item, xmpPacket) {
-			item.setXMPMetadata(xmpPacket); 
-	    }
+
+		setXmpPacket: function (item, xmpPacket) {
+			item.setXMPMetadata(xmpPacket);
+		}
 	});
-	
+
 	exports["AUDT"] = new XMPScriptAdapter({
-		getTarget: function() {	
-            if (app.activeDocument) {
-			     return app.activeDocument;
-            }
-            
-            return null;
+		getTarget: function () {
+			if (app.activeDocument) {
+				return app.activeDocument;
+			}
+
+			return null;
 		},
 
-		getTargetName: function(target) {
+		getTargetName: function (target) {
 			return target.displayName;
 		},
 
-		getXmpPacket : function(doc) {
+		getXmpPacket: function (doc) {
 			return doc.metadata.xmp;
 		},
-	
-		setXmpPacket : function(doc, xmpPacket) {
+
+		setXmpPacket: function (doc, xmpPacket) {
 			doc.metadata.xmp = xmpPacket;
 		}
 	});
-	
+
 	return exports;
-	
+
 })($.delegates || {});
 
 
@@ -345,10 +345,10 @@ $.delegates = (function(exports) {
  * with $.XMP.commit()
  * 
  **************************************************************************************/
-$.XMP = (function(exports) {
-	
+$.XMP = (function (exports) {
+
 	var DELEGATE_API = undefined;
-		
+
 	/**
 	 * Needs to be invoked before accessing any XMP property. 
 	 * Expects the application Id to be passed in in order to choose the right
@@ -357,15 +357,15 @@ $.XMP = (function(exports) {
 	 * Will return an error message if the initialization fails. Otherwise errors
 	 * cannot be propagated gracefully to the calling JavaScript context.
 	 */
-	exports.setup = function(appName) {
-		if(!$.delegates || !$.delegates[appName]) {
+	exports.setup = function (appName) {
+		if (!$.delegates || !$.delegates[appName]) {
 			return "Application [" + appName + "] not supported yet!";
 		}
-		
+
 		var delegate = $.delegates[appName];
 		DELEGATE_API = delegate.open();
-		
-		if(!DELEGATE_API) {
+
+		if (!DELEGATE_API) {
 			return "No metadata accessible.";
 		}
 	};
@@ -374,43 +374,43 @@ $.XMP = (function(exports) {
 	 * Obtains the full namespace URI from XMPConst.
 	 * See "JavaScript Tools Guide CC" (p. 262) for a complete list of namespace constants.
 	 */
-	exports.toNamespaceURI = function(namespaceRef) {
-		return XMPConst[namespaceRef];
-	},
-	
-	/**
-	 * Returns a descriptive name for the displayed doc or project item.
-	 */
-	exports.getTargetName = function() {
-		return DELEGATE_API.getTargetName();
-	},
-	
-	/**
-	 * Returns a string representation of the properties value.
-	 * If empty or not present, an empty string is returned.
-	 */
-	exports.read = function(namespaceUri, propertyName) {
-		var result = DELEGATE_API.read(namespaceUri, propertyName);
-		
-		// force implicit string conversion due to inconsistent data types.
-		return "" + result;
-	};
+	exports.toNamespaceURI = function (namespaceRef) {
+			return XMPConst[namespaceRef];
+		},
+
+		/**
+		 * Returns a descriptive name for the displayed doc or project item.
+		 */
+		exports.getTargetName = function () {
+			return DELEGATE_API.getTargetName();
+		},
+
+		/**
+		 * Returns a string representation of the properties value.
+		 * If empty or not present, an empty string is returned.
+		 */
+		exports.read = function (namespaceUri, propertyName) {
+			var result = DELEGATE_API.read(namespaceUri, propertyName);
+
+			// force implicit string conversion due to inconsistent data types.
+			return "" + result;
+		};
 
 	/**
 	 * Adds or updates a property with the given namespace and value.
 	 * Note that you need to call commit() in to serialize the changes back to the active document.
 	 */
-	exports.write = function(namespaceUri, propertyName, value) {
+	exports.write = function (namespaceUri, propertyName, value) {
 		return DELEGATE_API.write(namespaceUri, propertyName, value);
 	};
-	
+
 	/**
 	 * Serializes the current XMP metadata and writes it back into the application DOM.
 	 */
-	exports.commit = function() {
+	exports.commit = function () {
 		DELEGATE_API.commit();
 	};
-	
- 	return exports;
-	
+
+	return exports;
+
 })($.XMP || {});

@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="5.0" ExtensionBundleId="com.henrikstabell.audnotes" ExtensionBundleVersion="1.0.3"
-		ExtensionBundleName="Notes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ExtensionManifest Version="5.0" ExtensionBundleId="com.henrikstabell.audnotes" ExtensionBundleVersion="1.0.6" ExtensionBundleName="Notes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Author>
+    <![CDATA[
+      Ole Henrik Stabell
+    ]]>
+  </Author>
 	<ExtensionList>
-		<Extension Id="com.henrikstabell.audnotes" Version="1.0.2" />
+		<Extension Id="com.henrikstabell.audnotes" Version="1.0.6" />
 	</ExtensionList>
 	<ExecutionEnvironment>
 		<HostList>
-            <Host Name="AUDT" />
+      <Host Name="AUDT" Version="[8.0,12.0]" />
 		</HostList>
 		<LocaleList>
 			<Locale Code="All" />
 		</LocaleList>
 		<RequiredRuntimeList>
-			<RequiredRuntime Name="CSXS" Version="6.0" />
+			<RequiredRuntime Name="CSXS" Version="5.0" />
 		</RequiredRuntimeList>
 	</ExecutionEnvironment>
 	<DispatchInfoList>
@@ -21,6 +25,10 @@
 				<Resources>
 				<MainPath>./index.html</MainPath>
 				<ScriptPath>./jsx/hostscript.jsx</ScriptPath>
+				<CEFCommandLine>
+					<Parameter>--enable-nodejs</Parameter>
+					<Parameter>--mixed-context</Parameter>
+				</CEFCommandLine>
 				</Resources>
 				<Lifecycle>
 					<AutoVisible>true</AutoVisible>
@@ -30,9 +38,9 @@
 					<Menu>Notes</Menu>
 					<Geometry>
 						<Size>
-							<Height>350</Height>
-							<Width>300</Width>
-						</Size>              
+							<Height>450</Height>
+							<Width>400</Width>
+						</Size>           
 					</Geometry>				
 				</UI>
 			</DispatchInfo>
