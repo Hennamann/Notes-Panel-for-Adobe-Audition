@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="5.0" ExtensionBundleId="com.henrikstabell.audnotes" ExtensionBundleVersion="1.0.6" ExtensionBundleName="Notes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ExtensionManifest Version="5.0" ExtensionBundleId="com.henrikstabell.audnotes" ExtensionBundleVersion="1.0.7" ExtensionBundleName="Notes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Author>
     <![CDATA[
       Ole Henrik Stabell
     ]]>
   </Author>
 	<ExtensionList>
-		<Extension Id="com.henrikstabell.audnotes" Version="1.0.6" />
+		<Extension Id="com.henrikstabell.audnotes" Version="1.0.7" />
 	</ExtensionList>
 	<ExecutionEnvironment>
 		<HostList>

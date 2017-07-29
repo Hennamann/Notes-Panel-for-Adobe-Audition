@@ -14,6 +14,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     document.body.style.background = colorRGB;
 
+    if (appSkin.color.red == "74.9955") {
+        swapCSS('dark');
+    } else {
+        swapCSS('darker');
+    }
+
     cs.addEventListener("com.adobe.csxs.events.ThemeColorChanged", themeChangedEventListener);
 
 });
@@ -21,6 +27,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
 function themeChangedEventListener(event) {
     console.log('background color change detected.');
     changeThemeColor();
+}
+
+function swapCSS(cssfilename) {
+    if ($("#ccstyleTheme").length)
+        $("#ccstyleTheme").remove();
+    var link = document.createElement('link');
+    $("head").append('<link id="ccstyleTheme" href="css/styles-' +
+        cssfilename + '.css" rel="stylesheet" type="text/css" />');
 }
 
 function changeThemeColor() {
@@ -38,6 +52,11 @@ function changeThemeColor() {
     document.body.style.background = colorRGB;
     document.getElementById("notes").style.background = colorRGB;
     document.getElementById("notes").style.borderColor = colorRGB;
-    document.getElementsByClassName("icon-btn").style.background = colorRGB;
     document.getElementById("index_body").style.opacity = alpha / 255;
+
+    if (UIColorObj.color.red == "74.9955") {
+        swapCSS('dark');
+    } else {
+        swapCSS('darker');
+    }
 }
