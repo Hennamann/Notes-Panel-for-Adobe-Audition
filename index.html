@@ -31,8 +31,8 @@ Written by Ole Henrik Stabell - ole@henrikstabell.com
         <center><button type="button" class="btn-small debuglink" id="debug">Debug</button></center>
     </div>
     <script>
-        var csInterface = new CSInterface();
 
+        var csInterface = new CSInterface();
         // This works in Photoshop but not in Audition... Why not?
         // Look for the debug control file, and if it exists,
         // enable debugging controls
@@ -51,12 +51,10 @@ Written by Ole Henrik Stabell - ole@henrikstabell.com
         } else
             $(".debuglink").toggle(false);
 
-
         //Set up the event listener on the ExtendScript side:
         csInterface.evalScript("addDocumentListeners()");
-
         // Save the notes when Audition saves the document, (This is a bit of a hack, using extendscript events, as the CEP documentAfterSave event does not seem to be working despite Audition being on the list of supported apps...
-        csInterface.addEventListener("DocumentSaved", function (event) {
+        csInterface.addEventListener("com.adobe.csxs.events.DocumentSaveAs", function (event) {
             $('#notes-form').submit()
         })
 

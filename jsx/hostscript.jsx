@@ -9,17 +9,8 @@ if (ExternalObject.PlugPlugExternalObject == undefined) {
 
 // Add document listeners to dispatch CEP events, when specific Audition events are triggered..
 function addDocumentListeners() {
-	app.activeDocument.addEventListener(DocumentEvent.EVENT_SAVED, documentSaved);
 	app.addEventListener(DocumentEvent.EVENT_CLOSED, documentType);
 	app.addEventListener(DocumentEvent.EVENT_NEW, documentType);
-}
-
-// Cusotom event for document saving, as the CEP event does not work.
-function documentSaved(event) {
-	var csxsEvent = new CSXSEvent();
-	csxsEvent.type = "DocumentSaved";
-	csxsEvent.data = "Audition Document Saved!";
-	csxsEvent.dispatch();
 }
 
 // Check the current document type to ensure it supports metadata. This code should fire, but it doesen't... Could be the ES events being incorrect causing these events to never be dispatched...
