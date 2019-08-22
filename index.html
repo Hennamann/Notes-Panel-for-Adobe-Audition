@@ -24,7 +24,8 @@ Written by Ole Henrik Stabell - ole@henrikstabell.com
 
     <div id="content">
         <form id="notes-form">
-            <textarea id="notes" data-property="logComment" data-namespace-ref="NS_DM" data-namespace="http://ns.adobe.com/xmp/1.0/DynamicMedia/"></textarea>
+            <textarea id="notes" data-property="logComment" data-namespace-ref="NS_DM"
+                data-namespace="http://ns.adobe.com/xmp/1.0/DynamicMedia/"></textarea>
             <center><button type="button" class="btn-small" id="save-as">Save As</button></center>
         </form>
         <br>
@@ -53,23 +54,26 @@ Written by Ole Henrik Stabell - ole@henrikstabell.com
 
         //Set up the event listener on the ExtendScript side:
         csInterface.evalScript("addDocumentListeners()");
-        // Save the notes when Audition saves the document, (This is a bit of a hack, using extendscript events, as the CEP documentAfterSave event does not seem to be working despite Audition being on the list of supported apps...
+        // Save the notes when Audition saves the document.
         csInterface.addEventListener("com.adobe.csxs.events.DocumentSaveAs", function (event) {
             $('#notes-form').submit()
         })
 
+        // This does not work, unsure as to why, the custom event never fires despite unsupported documents being used...
         csInterface.addEventListener("DocumentNotSupported", function (event) {
             $('#notes').prop('disabled', true);
             $('#save-as').prop('disabled', true);
         })
 
+        // Same with this as the one above.
         csInterface.addEventListener("DocumentSupported", function (event) {
             $('#notes').prop('disabled', false);
             $('#save-as').prop('disabled', false);
         })
 
-        // Reload the notes panel when changing active document
+        // Reload the notes panel when changing active document aswell as save the current notes before switching
         csInterface.addEventListener("com.adobe.csxs.events.DocumentAfterActivate", function (event) {
+            $('#notes-form').submit()
             location.reload();
         })
 

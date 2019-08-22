@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="5.0" ExtensionBundleId="com.henrikstabell.audnotes" ExtensionBundleVersion="1.0.9" ExtensionBundleName="Notes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ExtensionManifest Version="5.0" ExtensionBundleId="com.henrikstabell.audnotes" ExtensionBundleVersion="1.1.0" ExtensionBundleName="Notes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Author>
     <![CDATA[
       Ole Henrik Stabell
     ]]>
   </Author>
 	<ExtensionList>
-		<Extension Id="com.henrikstabell.audnotes" Version="1.0.9" />
+		<Extension Id="com.henrikstabell.audnotes" Version="1.1.0" />
 	</ExtensionList>
 	<ExecutionEnvironment>
 		<HostList>
-      <Host Name="AUDT" Version="[8.0,14.0]" />
+      <Host Name="AUDT" Version="8.0" />
 		</HostList>
 		<LocaleList>
 			<Locale Code="All" />
