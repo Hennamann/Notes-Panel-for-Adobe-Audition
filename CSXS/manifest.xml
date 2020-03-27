@@ -10,7 +10,7 @@
 	</ExtensionList>
 	<ExecutionEnvironment>
 		<HostList>
-      <Host Name="AUDT" Version="8.0" />
+      <Host Name="AUDT" Version="10.0" />
 		</HostList>
 		<LocaleList>
 			<Locale Code="All" />
